@@ -11,6 +11,8 @@ BG_COLOR = 0, 0, 0
 LINE_COLOR = 48, 48, 48
 SIZE_GRID = 20
 COLOR_FIGURE = 245, 219, 91
+MOVE_DOWN_TIME = .2
+CYCLE_SCAN = .05
 
 
 def draw_grid():
@@ -31,6 +33,20 @@ def draw_figure(x, y):
     pygame.draw.rect(screen, COLOR_FIGURE, pygame.Rect(x, y, 20, 20))
 
 
+def move_down():
+    global posY
+    global posX
+    global cont_time
+
+    time.sleep(CYCLE_SCAN)
+    cont_time += CYCLE_SCAN
+
+    if cont_time >= MOVE_DOWN_TIME and posY < HIDTH - SIZE_GRID:
+        posY += SIZE_GRID
+        draw_figure(posX, posY)
+        cont_time = 0
+
+
 screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption('TETRIS')
 draw_grid()
@@ -45,10 +61,12 @@ while 1:
 
         if event.type == KEYDOWN:
             if event.key == K_RIGHT:
-                posX += SIZE_GRID
+                if posX < WEIGTH - SIZE_GRID:
+                    posX += SIZE_GRID
 
             if event.key == K_LEFT:
-                posX -= SIZE_GRID
+                if posX > 0:
+                    posX -= SIZE_GRID
 
             if event.key == K_UP:
                 pass
@@ -56,15 +74,7 @@ while 1:
             if event.key == K_DOWN:
                 posY += SIZE_GRID
 
-        if -1 < posX < WEIGTH:
-            draw_figure(posX, posY)
 
-    time.sleep(.4)
-    cont_time += .4
-    posY += SIZE_GRID
-    draw_figure(posX, posY)
-    if cont_time == 1:
-        cont_time = 0
-        print(cont_time)
+    move_down()
 
     pygame.display.update()
